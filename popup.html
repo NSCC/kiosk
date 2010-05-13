@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Popup Test</title>
+    <script type="text/javascript">
+        function scroll() {
+            var content = document.getElementById('content');
+            content.scrollTop += 100;           
+        }
+    </script>
+</head>
+<body>
+    <div id='wrapper'>
+        <div id='popup' style="width:950px;">
+            <div id='content' style="height:600px; overflow:hidden; float:left;">
+                <iframe src='http://www.nscc.ca/Learning_Programs/Current_Schedule.asp'
+                        style="overflow:hidden;border-width:0;width:850px;height:2500px"></iframe>
+            </div>
+            <div id='scrollbar' style="background-color:#eee;width:100px;height:600px;float:right">
+                <div id="scrollbarbutton" style="background-color:#888;width:100px;height:100px;" onclick="scroll();">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
