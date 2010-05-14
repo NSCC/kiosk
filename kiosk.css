@@ -20,13 +20,13 @@ iframe {
 /* common class styles */
 .button {
     float: left;
-    width: 21%;
-    height: 33%;
-    padding: 2%;
+    margin: 25px;
+    text-align: center;
+    padding: 0 50px;
 }
 .button_link {
-    width: 100%; /* 250/475px */
-    height: 200px; /* 200/350px */
+    width: 300px; /* 250/475px */
+    height: 255px; /* 200/350px */
     background-color: #666;
     border: ridge 4px #fff;
     background-repeat: no-repeat;
@@ -35,11 +35,11 @@ iframe {
     display: block;
     text-indent: -9999px;
     font-size: 0px;
+    margin: auto;
 }
 .button_text {
     color: #fff;
     font-size: 3em;
-    text-align: center;
 }
 .clear {
     clear: both;
@@ -54,6 +54,7 @@ iframe {
 .popup_content {
     overflow: hidden;
     float: left;
+    z-index: 1000;
 }
 .popup_scrollbar {
     float: right;
@@ -101,8 +102,9 @@ iframe {
 }
 #body {
     background-color: #000;
-    height: 950px;
+    height: 1025px;
     clear: both;
+    padding: 25px 44px;
 }
 #footer {
     height: 50px;
@@ -129,4 +131,7 @@ iframe {
 .zoom {
     border: solid 5px #69e;
     overflow: hidden;
+}
+#buttons {
+    height: 100%;
 }

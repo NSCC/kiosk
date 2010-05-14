@@ -2,22 +2,21 @@ var kiosk;
 var settings = {
     buttons: {
         main: [
-            { name:"NEWS", url:'#', icon:'news.png', click:function(){kiosk.showWebPage('http://www.nscc.ca/News_vents/index.asp');} },
+            { name:"NEWS", url:'#', icon:'news.png', click:function(){kiosk.showWebPage('http://www.nscc.ca/News_Events/Events/index.asp');} },
             { name:"MAP", url:'#', icon:'map.png', click:function(){kiosk.showPdf('plan.pdf');} },
             { name:"CALENDAR", url:'#', icon:'calendar.png', click:function(){kiosk.showCalendar();} },
             { name:"SCHEDULE", url:'#', icon:'schedule.png', click:function(){kiosk.showWebPage('http://www.nscc.ca/Learning_Programs/Current_Schedule.asp');} },
             { name:"GREEN CAMPUS", url:'#', icon:'green.png', click:function() {kiosk.loadButtons(settings.buttons.green);} },
-            { name:"CONTACTS", url:'#', icon:'contact.png' },
-            { name:"PORTFOLIOS", url:'#', icon:'portfolio.png', click:function() {kiosk.loadButtons(settings.buttons.portfolio);} },
-            { name:"TEST", url:'#', icon:'', click:function(){kiosk.showTest();} }
+            { name:"CONTACT US", url:'#', icon:'contact.png', click:function() {kiosk.showWebPage('http://www.nscc.ca/Contact_Us/');} },
+            { name:"PORTFOLIOS", url:'#', icon:'portfolio.png', click:function() {kiosk.loadButtons(settings.buttons.portfolio);} }
         ],
         green: [
             { name:"HOME", url:'#', icon:'home.png', click:function(){kiosk.loadButtons(settings.buttons.main);} },            
-            { name:"BIOWALL", url:'#', icon:'', click:function(){kiosk.showPdf('biowall.pdf');} }            
+            { name:"BIOWALL", url:'#', icon:'', click:function(){kiosk.showWebPage('http://localhost/biowall.html');} },            
+            { name:"SOLATUBE", url:'#', icon:'', click:function(){} }            
         ],
         portfolio: [
-            { name:"HOME", url:'#', icon:'home.png', click:function(){kiosk.loadButtons(settings.buttons.main);} },            
-            { name:"TEST", url:'#', icon:'', click:function(){kiosk.showTest();} }            
+            { name:"HOME", url:'#', icon:'home.png', click:function(){kiosk.loadButtons(settings.buttons.main);} }           
         ]
     }
 };
@@ -82,6 +81,16 @@ var Popup = new Class({
             }
         }).inject(this.popupDiv);
         
+        this.barrierIframeDiv = new Element('div', {
+            'styles': {
+                'z-index':1001,
+                'position':'absolute',
+                'top':0,
+                'left':0,
+                'width': this.options.width,
+                'height': this.options.height
+            }
+        }).inject(this.popupDiv);
         this.barrierIframe= new Element('iframe', {
             'src':'',
             'styles': {
@@ -90,11 +99,11 @@ var Popup = new Class({
                 'top':0,
                 'left':0,
                 'width': this.options.width,
-                'height': this.options.height,
+                'height': this.options.height
             },
             'frameborder':'0',
             'scrolling':'no'
-        }).inject(this.popupDiv);
+        }).inject(this.barrierIframeDiv);
         this.barrierDiv = new Element('div', {
             'styles': {
                 'z-index':1002,
@@ -136,10 +145,10 @@ var Popup = new Class({
     createScrollBar: function() {
 
         var scrollHeight = this.contentDiv.getScrollSize().y - this.contentDiv.getSize().y;
-
         if( scrollHeight > 10 ) {
 
             this.contentDiv.setStyle('width', this.options.width - 100);
+            this.barrierIframeDiv.setStyle('width', this.options.width - 100);
             this.barrierIframe.setStyle('width', this.options.width - 100);
             this.barrierDiv.setStyle('width', this.options.width - 100);
 
@@ -202,6 +211,33 @@ var Kiosk = new Class({
             'height':this.popup.getHeight()
         });
         pdf.inject(this.popup);
+        this.popup.show();
+    },
+    showSwf: function(filename) {
+        this.popup = new Popup();
+        var pdf = new Element('object', {
+            'width':this.popup.getWidth(),
+            'height':this.popup.getHeight(),
+            'z-index':1000
+        });
+        pdf.inject(this.popup);
+        var param = new Element('param', {
+            'name':'movie',
+            'value':'pdfs/' + filename
+        });
+        param.inject(pdf);
+        param = new Element('param', {
+            'name':'wmode',
+            'value':'transparent'
+        });
+        param.inject(pdf);
+        var embed = new Element('embed', {
+            'src':'pdfs/' + filename,
+            'width':this.popup.getWidth(),
+            'height':this.popup.getHeight(),
+            'z-index':1000
+        });
+        embed.inject(pdf);
         this.popup.show();
     },
     showWebPage: function(url) {
