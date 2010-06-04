@@ -50,11 +50,21 @@ iframe {
     top: 10px;
     left: 10px;
     border: solid 5px #000;
+    background-color: #fff;
+}
+.popup_title {
+    text-align: center;
+    font-size: 3.6em;
+    font-weight: bold;
+    color: #007;
+    background-color: #fff;
+    height: 50px;
 }
 .popup_content {
     overflow: hidden;
     float: left;
     z-index: 1000;
+    text-align: center;
 }
 .popup_scrollbar {
     float: right;
@@ -104,7 +114,8 @@ iframe {
     background-color: #000;
     height: 1025px;
     clear: both;
-    padding: 25px 44px;
+    padding: 25px 43px;
+    overflow: hidden;
 }
 #footer {
     height: 50px;
@@ -134,4 +145,5 @@ iframe {
 }
 #buttons {
     height: 100%;
+    overflow: hidden;
 }

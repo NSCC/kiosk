@@ -1,32 +1,51 @@
+// <reference path="mootools-1.2.4-core-nc.js" />
+// <reference path="mootools-1.2.4.4-more.js" />
+
 var kiosk;
 var settings = {
     buttons: {
         main: [
-            { name:"NEWS", url:'#', icon:'news.png', click:function(){kiosk.showWebPage('http://www.nscc.ca/News_Events/Events/index.asp');} },
-            { name:"MAP", url:'#', icon:'map.png', click:function(){kiosk.showPdf('plan.pdf');} },
-            { name:"CALENDAR", url:'#', icon:'calendar.png', click:function(){kiosk.showCalendar();} },
-            { name:"SCHEDULE", url:'#', icon:'schedule.png', click:function(){kiosk.showWebPage('http://www.nscc.ca/Learning_Programs/Current_Schedule.asp');} },
-            { name:"GREEN CAMPUS", url:'#', icon:'green.png', click:function() {kiosk.loadButtons(settings.buttons.green);} },
-            { name:"CONTACT US", url:'#', icon:'contact.png', click:function() {kiosk.showWebPage('http://www.nscc.ca/Contact_Us/');} },
-            { name:"PORTFOLIOS", url:'#', icon:'portfolio.png', click:function() {kiosk.loadButtons(settings.buttons.portfolio);} }
+            { name: "NEWS", url: '#', icon: 'news.png', click: function () { kiosk.showWebPage('http://www.nscc.ca/News_Events/Events/index.asp'); } },
+            { name: "MAP", url: '#', icon: 'map.png', click: function () { kiosk.showPdf('plan.pdf'); } },
+            { name: "CALENDAR", url: '#', icon: 'calendar.png', click: function () { kiosk.showCalendar(); } },
+            { name: "SCHEDULE", url: '#', icon: 'schedule.png', click: function () { kiosk.showWebPage('http://www.nscc.ca/Learning_Programs/Current_Schedule.asp'); } },
+            { name: "GREEN CAMPUS", url: '#', icon: 'green.png', click: function () { kiosk.loadButtons(settings.buttons.green); } },
+            { name: "CONTACT US", url: '#', icon: 'contact.png', click: function () { kiosk.showWebPage('http://nscc.ca/Contact_Us/campus_listing.asp?Enter+Campus%3A=INSTITUTE', 25000); } },
+            { name: "PORTFOLIOS", url: '#', icon: 'portfolio.png', click: function () { kiosk.loadButtons(settings.buttons.portfolio); } },
+            { name: "WEATHER", url: '#', icon: 'weather.png', click: function () { kiosk.showWebPage('http://www.theweathernetwork.com/weather/cans0057?ref=homecity'); } },
+            { name: "BUS SCHEDULE", url: '#', icon: 'bus.png', click: function () { kiosk.loadButtons(settings.buttons.bus); } },
+            { name: "PROGRAM VIDEOS", url: '#', icon: 'videos.png', click: function () { kiosk.loadButtons(settings.buttons.videos); } },
+            { name: "JOB POSTING", url: '#', icon: 'jobs.png', click: function () { kiosk.showWebPage('job_posting.aspx', 20000); } },
+            { name: "MIRROR", url: '#', icon: 'mirror.png', click: function () { kiosk.showSwf('media/WebCamMirror.swf', 'MIRROR', 640, 480, 0.75) } }
         ],
         green: [
-            { name:"HOME", url:'#', icon:'home.png', click:function(){kiosk.loadButtons(settings.buttons.main);} },            
-            { name:"BIOWALL", url:'#', icon:'', click:function(){kiosk.showWebPage('http://localhost/biowall.html');} },            
-            { name:"SOLATUBE", url:'#', icon:'', click:function(){} }            
+            { name: "HOME", url: '#', icon: 'home.png', click: function () { kiosk.loadButtons(settings.buttons.main); } },
+            { name: "BIOWALL", url: '#', icon: '', click: function () { kiosk.showSwf('pdfs/BIOWALL.swf'); } },
+            { name: "SOLATUBE", url: '#', icon: 'solatube.png', click: function () { kiosk.showWebPage('http://localhost/solatube.html'); } }
         ],
         portfolio: [
-            { name:"HOME", url:'#', icon:'home.png', click:function(){kiosk.loadButtons(settings.buttons.main);} }           
+            { name: "HOME", url: '#', icon: 'home.png', click: function () { kiosk.loadButtons(settings.buttons.main); } }
+        ],
+        bus: [
+            { name: "HOME", url: '#', icon: 'home.png', click: function () { kiosk.loadButtons(settings.buttons.main); } },
+            { name: "MANORS-3", url: '#', icon: 'bus3.png', click: function () { kiosk.showSwf('pdfs/busroute3.swf'); } },
+            { name: "ROBIE-7", url: '#', icon: 'bus7.png', click: function () { kiosk.showSwf('pdfs/busroute7.swf', null, 403, 885); } },
+            { name: "BARRINGTON-9", url: '#', icon: 'bus9.png', click: function () { kiosk.showSwf('pdfs/busroute9.swf', null, 244, 864); } }
+        ],
+        videos: [
+            { name: "HOME", url: '#', icon: 'home.png', click: function () { kiosk.loadButtons(settings.buttons.main); } },
+            { name: "INFORMATION TECH", url: '#', icon: 'videos.png', click: function () { kiosk.showSwf('http://www.nscc.ca/inc/media/testdrive/it.swf', null, 480, 273, 0.75); } },
+            { name: "DENTAL ASSISTING", url: '#', icon: 'videos.png', click: function () { kiosk.showSwf('http://www.nscc.ca/inc/media/testdrive/dental.swf', null, 480, 273, 0.75); } }
         ]
     }
 };
 
 var Button = new Class({
 
-    initialize: function(params) {
+    initialize: function (params) {
         this.params = params;
     },
-    inject: function(parent, where) {
+    inject: function (parent, where) {
         var container = new Element('div', {
             'class': 'button'
         });
@@ -39,10 +58,10 @@ var Button = new Class({
             },
             'events': {
                 'click': this.params.click,
-                'mouseover': function() {
+                'mouseover': function () {
                     this.tween('background-color', '#fff');
                 },
-                'mouseout': function() {
+                'mouseout': function () {
                     this.tween('background-color', '#666');
                 }
             }
@@ -62,90 +81,103 @@ var Popup = new Class({
     options: {
         width: Window.getWidth() - 40,
         height: Window.getHeight() - 40,
-        timeout: 300000 // 5 minute timeout on popups
+        timeout: 300000, // 5 minute timeout on popups
+        title: null
     },
-    initialize: function(options) {
-    
+    initialize: function (options) {
+
         // added in case browser window is resized
         this.options.width = Window.getWidth() - 40;
         this.options.height = Window.getHeight() - 40;
-    
+
         this.setOptions(options);
-        
-        this.popupDiv = new Element('div', {'class':'popup'});
+
+        this.popupDiv = new Element('div', { 'class': 'popup' });
+
+        if ($chk(this.options.title)) {
+            var titleDiv = new Element('div', {
+                'class': 'popup_title',
+                'text': this.options.title
+            }).inject(this.popupDiv);
+            this.options.height -= 50;
+        }
+
         this.contentDiv = new Element('div', {
-            'class':'popup_content',
+            'class': 'popup_content',
             'styles': {
-                'height':this.options.height,
-                'width':this.options.width
+                'height': this.options.height,
+                'width': this.options.width
             }
         }).inject(this.popupDiv);
-        
+
+
         this.barrierIframeDiv = new Element('div', {
             'styles': {
-                'z-index':1001,
-                'position':'absolute',
-                'top':0,
-                'left':0,
+                'z-index': 1001,
+                'position': 'absolute',
+                'top': 0,
+                'left': 0,
                 'width': this.options.width,
                 'height': this.options.height
             }
         }).inject(this.popupDiv);
-        this.barrierIframe= new Element('iframe', {
-            'src':'',
+        this.barrierIframe = new Element('iframe', {
+            'src': '',
             'styles': {
-                'z-index':1001,
-                'position':'absolute',
-                'top':0,
-                'left':0,
+                'z-index': 1001,
+                'position': 'absolute',
+                'top': 0,
+                'left': 0,
                 'width': this.options.width,
-                'height': this.options.height
+                'height': this.options.height,
+                'opacity': 0.01
             },
-            'frameborder':'0',
-            'scrolling':'no'
+            'frameborder': '0',
+            'scrolling': 'no',
+            'allowtransparency': 'true'
         }).inject(this.barrierIframeDiv);
         this.barrierDiv = new Element('div', {
             'styles': {
-                'z-index':1002,
-                'position':'absolute',
-                'top':0,
-                'left':0,
+                'z-index': 1002,
+                'position': 'absolute',
+                'top': 0,
+                'left': 0,
                 'width': this.options.width,
                 'height': this.options.height
             },
             'events': {
-                'click': function() {
+                'click': function () {
                     this.popupDiv.dispose();
-                }.bind(this)
+                } .bind(this)
             }
         }).inject(this.popupDiv);
 
         this.resetHideTimer();
     },
-    toElement: function() {
+    toElement: function () {
         return this.contentDiv;
     },
-    getHeight: function() {
+    getHeight: function () {
         return this.options.height;
     },
-    getWidth: function() {
+    getWidth: function () {
         return this.options.width;
     },
-    hide: function() {
+    hide: function () {
         this.popupDiv.dispose();
     },
-    show: function() {
+    show: function () {
         this.popupDiv.inject('content');
         this.createScrollBar();
     },
-    resetHideTimer: function() {
+    resetHideTimer: function () {
         $clear(this.hide_timer);
         this.hide_timer = this.hide.delay(this.options.timeout, this);
     },
-    createScrollBar: function() {
+    createScrollBar: function () {
 
         var scrollHeight = this.contentDiv.getScrollSize().y - this.contentDiv.getSize().y;
-        if( scrollHeight > 10 ) {
+        if (scrollHeight > 10) {
 
             this.contentDiv.setStyle('width', this.options.width - 100);
             this.barrierIframeDiv.setStyle('width', this.options.width - 100);
@@ -153,135 +185,163 @@ var Popup = new Class({
             this.barrierDiv.setStyle('width', this.options.width - 100);
 
             var scrollbar = new Element('div', {
-                'class':'popup_scrollbar',
-                'styles' : {
-                    'height':this.options.height
+                'class': 'popup_scrollbar',
+                'styles': {
+                    'height': this.options.height
                 }
             }).inject(this.popupDiv);
             var scrollbarButton = new Element('div', {
-                'class':'popup_scrollbutton'
+                'class': 'popup_scrollbutton'
             }).inject(scrollbar);
-    
+
             this.slider = new Slider(scrollbar, scrollbarButton, {
-                mode:'vertical',
+                mode: 'vertical',
                 steps: scrollHeight,
-                onChange: function(step) {
-                    this.contentDiv.scrollTo(0,step);
-                }.bind(this)
+                onChange: function (step) {
+                    this.contentDiv.scrollTo(0, step);
+                } .bind(this)
             });
         }
     }
 });
 
 var Kiosk = new Class({
-    initialize: function() {
-        this.loadButtons(settings.buttons.main);
+    initialize: function () {
+        this.showHome();
         this.current_page = 1;
     },
-    createButton: function(params, div, where) {
+    createButton: function (params, div, where) {
         var button = new Button(params);
         button.inject(div, where);
         return button;
     },
-    loadButtons: function(buttons) {
+    loadButtons: function (buttons) {
         $('buttons').empty();
-        for( var i=0; i<buttons.length; i++ ) {
-            this.createButton(buttons[i], 'buttons');            
+        for (var i = 0; i < buttons.length; i++) {
+            this.createButton(buttons[i], 'buttons');
         }
+
+        // reset to home page
+        $clear(this.home_timer);
+        this.home_timer = this.showHome.delay(60000, this);
     },
-    showCalendar: function() {
+    showHome: function () {
+        this.loadButtons(settings.buttons.main);
+    },
+    showCalendar: function () {
         this.popup = new Popup();
         var iframe = new Element('iframe', {
-            'src':'http://www.google.com/calendar/embed?src=kvhfe329ifedq7le5hs51ml2jg%40group.calendar.google.com&ctz=America/Halifax',
+            'src': 'http://www.google.com/calendar/embed?src=kvhfe329ifedq7le5hs51ml2jg%40group.calendar.google.com&ctz=America/Halifax',
             'styles': {
                 'width': '100%',
                 'height': this.popup.getHeight()
             },
-            'frameborder':'0',
-            'scrolling':'no'
+            'frameborder': '0',
+            'scrolling': 'no'
         }).inject(this.popup);
         this.popup.show();
     },
-    showPdf: function(filename) {
+    showPdf: function (filename) {
         this.popup = new Popup();
         var pdf = new Element('object', {
-            'data':'pdfs/' + filename,
-            'type':'application/pdf',
-            'width':this.popup.getWidth(),
-            'height':this.popup.getHeight()
+            'data': 'pdfs/' + filename,
+            'type': 'application/pdf',
+            'width': this.popup.getWidth(),
+            'height': this.popup.getHeight()
         });
         pdf.inject(this.popup);
         this.popup.show();
     },
-    showSwf: function(filename) {
-        this.popup = new Popup();
-        var pdf = new Element('object', {
-            'width':this.popup.getWidth(),
-            'height':this.popup.getHeight(),
-            'z-index':1000
+    showSwf: function (filename, title, swfwidth, swfheight, zoom) {
+        this.popup = new Popup({title:title});
+        var height = this.popup.getHeight();
+        var width = this.popup.getWidth();
+        if ($chk(zoom)) {
+            height = height * zoom;
+            width = width * zoom;
+        }
+        if ($chk(swfwidth)) {
+            height = width / swfwidth * swfheight;
+        }
+        var swf = new Swiff(filename, {
+            width: '100%',
+            height: height,
+            params: {
+                wmode: 'transparent',
+                quality: 'high'
+            }
         });
-        pdf.inject(this.popup);
-        var param = new Element('param', {
-            'name':'movie',
-            'value':'pdfs/' + filename
-        });
-        param.inject(pdf);
-        param = new Element('param', {
-            'name':'wmode',
-            'value':'transparent'
-        });
-        param.inject(pdf);
-        var embed = new Element('embed', {
-            'src':'pdfs/' + filename,
-            'width':this.popup.getWidth(),
-            'height':this.popup.getHeight(),
-            'z-index':1000
-        });
-        embed.inject(pdf);
+        swf.inject(this.popup);
+        if ($chk(zoom)) {
+            var zoomdiv = new Element('div', {
+                styles: {
+                    width: width,
+                    height: height,
+                    'margin-left': (this.popup.getWidth() - width) / 2,
+                    'margin-top': (this.popup.getHeight() - height) / 2
+                }
+            });
+            zoomdiv.wraps(swf);
+        }
         this.popup.show();
     },
-    showWebPage: function(url) {
+    showWebPage: function (url, height) {
         this.popup = new Popup();
+        if (!$chk(height)) {
+            height = 2000;
+        }
         var iframe = new Element('iframe', {
-            'src':url,
-            'width':'100%',
-            'height':2000,
-            'frameborder':'0',
-            'scrolling':'no'
+            'src': url,
+            'width': '100%',
+            'height': height,
+            'frameborder': '0',
+            'scrolling': 'no'
         });
         iframe.inject(this.popup);
         this.popup.show();
     },
-    showSchedule: function() {
+    showSchedule: function () {
         var request = new Request.HTML({
             url: 'http://www.nscc.ca/Learning_Programs/Current_Schedule.asp',
-            onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript) {
+            onSuccess: function (responseTree, responseElements, responseHTML, responseJavaScript) {
                 //$('content').adopt(responseTree.getElement('form'));
                 alert(responseHTML);
             },
-            onFailure: function() {
+            onFailure: function () {
                 alert('failed');
             }
         }).get();
     },
-    showTest: function() {
+    showTest: function () {
         var request = new Request.HTML({
             url: 'http://localhost/NSCCKiosk/schedule.html',
-            onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript) {
-                var popup = new Popup();                
+            onSuccess: function (responseTree, responseElements, responseHTML, responseJavaScript) {
+                var popup = new Popup();
                 popup.contentDiv.set('html', responseHTML);
                 popup.show();
             },
-            onFailure: function() {
+            onFailure: function () {
                 alert('failed');
             }
         }).get();
     },
-    showGreen: function() {
-        
+    showJobPosting: function () {
+        var request = new Request.HTML({
+            url: 'job_posting.aspx',
+            onSuccess: function (responseTree, responseElements, responseHTML, responseJavaScript) {
+                var popup = new Popup();
+                popup.contentDiv.set('html', responseHTML);
+                popup.show();
+            },
+            onFailure: function () {
+                alert('failed');
+            }
+        }).get();
     },
-    showPortfolios: function() {
-        
+    showWebCam: function () {
+
+        window.runtime.mx.controls.Alert.show('hello world!');
+
     }
 });
 
