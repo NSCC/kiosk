@@ -6,7 +6,7 @@ var settings = {
     buttons: {
         main: [
             { name: "NEWS", url: '#', icon: 'news.png', click: function () { kiosk.showWebPage('http://www.nscc.ca/News_Events/Events/index.asp'); } },
-            { name: "MAP", url: '#', icon: 'map.png', click: function () { kiosk.showPdf('plan.pdf'); } },
+            { name: "MAP", url: '#', icon: 'map.png', click: function () { kiosk.loadButtons(settings.buttons.map); } },
             { name: "CALENDAR", url: '#', icon: 'calendar.png', click: function () { kiosk.showCalendar(); } },
             { name: "SCHEDULE", url: '#', icon: 'schedule.png', click: function () { kiosk.showWebPage('http://www.nscc.ca/Learning_Programs/Current_Schedule.asp'); } },
             { name: "GREEN CAMPUS", url: '#', icon: 'green.png', click: function () { kiosk.loadButtons(settings.buttons.green); } },
@@ -16,11 +16,11 @@ var settings = {
             { name: "BUS SCHEDULE", url: '#', icon: 'bus.png', click: function () { kiosk.loadButtons(settings.buttons.bus); } },
             { name: "PROGRAM VIDEOS", url: '#', icon: 'videos.png', click: function () { kiosk.loadButtons(settings.buttons.videos); } },
             { name: "JOB POSTING", url: '#', icon: 'jobs.png', click: function () { kiosk.showWebPage('job_posting.aspx', 20000); } },
-            { name: "MIRROR", url: '#', icon: 'mirror.png', click: function () { kiosk.showSwf('media/WebCamMirror.swf', 'MIRROR', 640, 480, 0.75) } }
+            { name: "MIRROR", url: '#', icon: 'mirror.png', click: function () { kiosk.showSwf('media/WebCamMirror.swf', null, 640, 480, 0.75) } }
         ],
         green: [
             { name: "HOME", url: '#', icon: 'home.png', click: function () { kiosk.loadButtons(settings.buttons.main); } },
-            { name: "BIOWALL", url: '#', icon: '', click: function () { kiosk.showSwf('pdfs/BIOWALL.swf'); } },
+            { name: "BIOWALL", url: '#', icon: 'biowall.png', click: function () { kiosk.showSwf('pdfs/BIOWALL.swf'); } },
             { name: "SOLATUBE", url: '#', icon: 'solatube.png', click: function () { kiosk.showWebPage('http://localhost/solatube.html'); } }
         ],
         portfolio: [
@@ -36,6 +36,11 @@ var settings = {
             { name: "HOME", url: '#', icon: 'home.png', click: function () { kiosk.loadButtons(settings.buttons.main); } },
             { name: "INFORMATION TECH", url: '#', icon: 'videos.png', click: function () { kiosk.showSwf('http://www.nscc.ca/inc/media/testdrive/it.swf', null, 480, 273, 0.75); } },
             { name: "DENTAL ASSISTING", url: '#', icon: 'videos.png', click: function () { kiosk.showSwf('http://www.nscc.ca/inc/media/testdrive/dental.swf', null, 480, 273, 0.75); } }
+        ],
+        map: [
+            { name: "HOME", url: '#', icon: 'home.png', click: function () { kiosk.loadButtons(settings.buttons.main); } },
+            { name: "1ST FLOOR", url: '#', icon: 'floor1.png', click: function () { kiosk.showImage('images/itc1.png'); } },
+            { name: "2ND FLOOR", url: '#', icon: 'floor2.png', click: function () { kiosk.showImage('images/itc2.png'); } }
         ]
     }
 };
@@ -82,7 +87,7 @@ var Popup = new Class({
         width: Window.getWidth() - 40,
         height: Window.getHeight() - 40,
         timeout: 300000, // 5 minute timeout on popups
-        title: null
+        title: 'PRESS ANYWHERE ON SCREEN TO RETURN TO MENU'
     },
     initialize: function (options) {
 
@@ -164,6 +169,7 @@ var Popup = new Class({
         return this.options.width;
     },
     hide: function () {
+        $clear(this.hide_timer);
         this.popupDiv.dispose();
     },
     show: function () {
@@ -253,7 +259,7 @@ var Kiosk = new Class({
         this.popup.show();
     },
     showSwf: function (filename, title, swfwidth, swfheight, zoom) {
-        this.popup = new Popup({title:title});
+        this.popup = new Popup();
         var height = this.popup.getHeight();
         var width = this.popup.getWidth();
         if ($chk(zoom)) {
@@ -338,10 +344,18 @@ var Kiosk = new Class({
             }
         }).get();
     },
-    showWebCam: function () {
-
-        window.runtime.mx.controls.Alert.show('hello world!');
-
+    showImage: function (filename, imgwidth, imgheight) {
+        this.popup = new Popup();
+        var img = Asset.image(filename, {
+            width: imgwidth,
+            height: imgheight,
+            'onload': function () {
+                this.inject(kiosk.popup);
+                kiosk.popup.show();
+            },
+            'onerror': function () { alert('error'); },
+            'onabort': function () { alert('abort'); }
+        });
     }
 });
 
