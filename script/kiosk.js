@@ -11,7 +11,7 @@ var settings = {
             { name: "SCHEDULE", url: '#', icon: 'schedule.png', click: function () { kiosk.showWebPage('http://www.nscc.ca/Learning_Programs/Current_Schedule.asp'); } },
             { name: "GREEN CAMPUS", url: '#', icon: 'green.png', click: function () { kiosk.loadButtons(settings.buttons.green); } },
             { name: "CONTACT US", url: '#', icon: 'contact.png', click: function () { kiosk.showWebPage('http://nscc.ca/Contact_Us/campus_listing.asp?Enter+Campus%3A=INSTITUTE', 25000); } },
-            { name: "PORTFOLIOS", url: '#', icon: 'portfolio.png', click: function () { kiosk.loadButtons(settings.buttons.portfolio); } },
+            { name: "PORTFOLIO", url: '#', icon: 'portfolio.png', click: function () { kiosk.showWebPage('http://nscc.ca/Learning_Programs/Portfolio/index.asp'); } },
             { name: "WEATHER", url: '#', icon: 'weather.png', click: function () { kiosk.showWebPage('http://www.theweathernetwork.com/weather/cans0057?ref=homecity'); } },
             { name: "BUS SCHEDULE", url: '#', icon: 'bus.png', click: function () { kiosk.loadButtons(settings.buttons.bus); } },
             { name: "PROGRAM VIDEOS", url: '#', icon: 'videos.png', click: function () { kiosk.loadButtons(settings.buttons.videos); } },
@@ -21,7 +21,7 @@ var settings = {
         green: [
             { name: "HOME", url: '#', icon: 'home.png', click: function () { kiosk.loadButtons(settings.buttons.main); } },
             { name: "BIOWALL", url: '#', icon: 'biowall.png', click: function () { kiosk.showSwf('pdfs/BIOWALL.swf'); } },
-            { name: "SOLATUBE", url: '#', icon: 'solatube.png', click: function () { kiosk.showWebPage('http://localhost/solatube.html'); } }
+            { name: "SOLATUBE", url: '#', icon: 'solatube.png', click: function () { kiosk.showWebPage('http://kiosk1.campus.nscc.ca/solatube.html'); } }
         ],
         portfolio: [
             { name: "HOME", url: '#', icon: 'home.png', click: function () { kiosk.loadButtons(settings.buttons.main); } }
