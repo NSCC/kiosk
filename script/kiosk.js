@@ -21,8 +21,7 @@ var settings = {
         green: [
             { name: "HOME", url: '#', icon: 'home.png', click: function () { kiosk.loadButtons(settings.buttons.main); } },
             { name: "BIOWALL", url: '#', icon: 'biowall.png', click: function () { kiosk.showSwf('pdfs/BIOWALL.swf'); } },
-            { name: "SOLATUBE", url: '#', icon: 'solatube.png', click: function () { kiosk.showWebPage('http://kiosk1.campus.nscc.ca/solatube.html'); } },
-            { name: "NEWSLETTER", url: '#', icon: 'biowall.png', click: function () { kiosk.showSwf('pdfs/newsletter.swf' ); } }
+            { name: "SOLATUBE", url: '#', icon: 'solatube.png', click: function () { kiosk.showWebPage('http://kiosk1.campus.nscc.ca/solatube.html'); } }
         ],
         portfolio: [
             { name: "HOME", url: '#', icon: 'home.png', click: function () { kiosk.loadButtons(settings.buttons.main); } }
@@ -240,8 +239,8 @@ var Kiosk = new Class({
             styles: {
                 'z-index': 1002,
 								position: 'absolute',
-								width: Window.getWidth(),
-								height: Window.getHeight() - 115
+								width: Window.getWidth() - 50,
+								height: Window.getHeight() - 165
             },
             events: {
                 click: function () {
