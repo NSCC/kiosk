@@ -21,7 +21,8 @@ var settings = {
         green: [
             { name: "HOME", url: '#', icon: 'home.png', click: function () { kiosk.loadButtons(settings.buttons.main); } },
             { name: "BIOWALL", url: '#', icon: 'biowall.png', click: function () { kiosk.showSwf('pdfs/BIOWALL.swf'); } },
-            { name: "SOLATUBE", url: '#', icon: 'solatube.png', click: function () { kiosk.showWebPage('http://kiosk1.campus.nscc.ca/solatube.html'); } }
+            { name: "SOLATUBE", url: '#', icon: 'solatube.png', click: function () { kiosk.showWebPage('http://kiosk1.campus.nscc.ca/solatube.html'); } },
+            { name: "NEWSLETTER", url: '#', icon: 'biowall.png', click: function () { kiosk.showSwf('pdfs/newsletter.swf' ); } }
         ],
         portfolio: [
             { name: "HOME", url: '#', icon: 'home.png', click: function () { kiosk.loadButtons(settings.buttons.main); } }
@@ -232,7 +233,31 @@ var Kiosk = new Class({
         this.home_timer = this.showHome.delay(60000, this);
     },
     showHome: function () {
-        this.loadButtons(settings.buttons.main);
+        //this.loadButtons(settings.buttons.main);
+
+        $('buttons').empty();
+        var div = new Element('div', {
+            styles: {
+                'z-index': 1002,
+								position: 'absolute',
+								width: Window.getWidth(),
+								height: Window.getHeight() - 115
+            },
+            events: {
+                click: function () {
+									this.loadButtons(settings.buttons.main);
+                } .bind(this)
+            }
+        }).inject('buttons');
+
+        var swf = new Swiff('pdfs/agenda1.swf', {
+            width: '100%',
+            height: '100%',
+            params: {
+                wmode: 'transparent',
+                quality: 'high'
+            }
+        }).inject('buttons');
     },
     showCalendar: function () {
         this.popup = new Popup();

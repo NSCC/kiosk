@@ -13,51 +13,11 @@ public partial class job_posting : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        // submit username/password to http://www.nscc.ca/Services/Graduate_Employment_Services/index.asp
-        // fields: EmailAddress, Password
-        // values: employment, nsccges07
-
-        string url = "http://www.nscc.ca/Services/Graduate_Employment_Services/index.asp";
-
-        // do a simple GET on index.asp to get an ASPSESSIONID
-        HttpWebRequest get = (HttpWebRequest)WebRequest.Create(url);
-        get.Method = "GET";
-
-        HttpWebResponse getr = (HttpWebResponse)get.GetResponse();
-        string cookie = getr.Headers["Set-Cookie"];
-        if (!String.IsNullOrEmpty(cookie))
-        {
-            cookie = cookie.Substring(0, cookie.IndexOf(';'));
-        }
-
-        string postString = "EmailAddress=employment&Password=nsccges07&OK=Login";
-        byte[] postData = Encoding.ASCII.GetBytes(postString);
-
-        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-        request.Method = "POST";
-        request.ContentType = "application/x-www-form-urlencoded";
-        request.Headers.Add(HttpRequestHeader.Cookie, cookie);
-        request.Referer = url;
-        request.ContentLength = postData.Length;
-
-        Stream requestStream = request.GetRequestStream();
-        requestStream.Write(postData, 0, postData.Length);
-        requestStream.Close();
-
-        HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-        Stream responseStream = response.GetResponseStream();
-        StreamReader responseReader = new StreamReader(responseStream);
-        string responseText = responseReader.ReadToEnd();
-        responseReader.Close();
-        responseStream.Close();
-        response.Close();
-
-        url = "http://www.nscc.ca/Services/Graduate_Employment_Services/Grad_Employ_Full.asp";
+				string url = "http://www.nscc.ca/services/graduate_employment_services/grad_employ_full.asp";
 
         // now go to listing of jobs page
         HttpWebRequest jobRequest = (HttpWebRequest)WebRequest.Create(url);
         jobRequest.Method = "GET";
-        jobRequest.Headers.Add(HttpRequestHeader.Cookie, cookie);
 
         HttpWebResponse jobResponse = (HttpWebResponse)jobRequest.GetResponse();
 
@@ -72,10 +32,6 @@ public partial class job_posting : System.Web.UI.Page
         doc.LoadHtml(jobResponseText);
 
         HtmlNode contentdiv = doc.DocumentNode.SelectSingleNode("//div[@id='content']");
-
-        // remove divs at top of list
-        contentdiv.SelectSingleNode("div[@id='cookietrail']").Remove();
-        contentdiv.SelectSingleNode("div[@class='WidgetMenu']").Remove();
 
         // remove javascript tags
         foreach (HtmlNode jnode in contentdiv.SelectNodes("script"))
