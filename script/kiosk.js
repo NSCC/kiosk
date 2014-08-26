@@ -232,7 +232,7 @@ var Kiosk = new Class({
         this.home_timer = this.showHome.delay(60000, this);
     },
     showHome: function () {
-        //this.loadButtons(settings.buttons.main);
+        this.loadButtons(settings.buttons.main);
 
         $('buttons').empty();
         var div = new Element('div', {
@@ -248,14 +248,19 @@ var Kiosk = new Class({
                 } .bind(this)
             }
         }).inject('buttons');
-
-        var swf = new Swiff('pdfs/agenda1.swf', {
+/*
+        var swf = new Swiff('pdfs/agenda2.swf', {
             width: '100%',
             height: '100%',
             params: {
                 wmode: 'transparent',
                 quality: 'high'
             }
+        }).inject('buttons');
+*/
+        var img = Asset.image('images/orientation2014sm.png', {
+            width: '1606px',
+            height: '975px'
         }).inject('buttons');
     },
     showCalendar: function () {
