@@ -44,7 +44,7 @@ var settings = {
         ]
     },
     ads: [
-      { url: 'images/landscape.jpg', width: 1834, height: 679, start: '2014-10-11', end: '2014-10-13' }, /* bursaries ad */
+      { url: 'images/landscape.jpg', width: 1834, height: 679, start: '2014-10-11', end: '2014-10-14' }, /* bursaries ad */
       { url: 'images/orientation2014sm.png', width: 1606, height: 975, end: '2014-09-06' } /* orientation schedule */
     ]
 };
@@ -300,7 +300,10 @@ var AdRotater = new Class({
           this.element.setStyle('padding', vpad + 'px 0');
           
           this.element.adopt(img);
-        }
+        } else {
+					// no more ads to show, so inform the kiosk
+					this.fireEvent('click');
+				}
     },
     resetTimer: function () {
         $clear(this.timer);
