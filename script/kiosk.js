@@ -10,7 +10,7 @@ var settings = {
             { name: "CALENDAR", url: '#', icon: 'calendar.png', click: function () { kiosk.showCalendar(); } },
             { name: "SCHEDULE", url: '#', icon: 'schedule.png', click: function () { kiosk.showWebPage('http://www.nscc.ca/Learning_Programs/Current_Schedule.asp'); } },
             { name: "GREEN CAMPUS", url: '#', icon: 'green.png', click: function () { kiosk.loadButtons(settings.buttons.green); } },
-            { name: "CONTACT US", url: '#', icon: 'contact.png', click: function () { kiosk.showWebPage('http://nscc.ca/Contact_Us/campus_listing.asp?Enter+Campus%3A=INSTITUTE', 25000); } },
+            { name: "CONTACT US", url: '#', icon: 'contact.png', click: function () { kiosk.showWebPage('http://nscc.ca/Contact_Us/campus_listing.asp?Enter+Campus%3A=INSTITUTE', 250000); } },
             { name: "PORTFOLIO", url: '#', icon: 'portfolio.png', click: function () { kiosk.showWebPage('http://nscc.ca/Learning_Programs/Portfolio/index.asp'); } },
             { name: "WEATHER", url: '#', icon: 'weather.png', click: function () { kiosk.showWebPage('http://www.theweathernetwork.com/weather/cans0057?ref=homecity'); } },
             { name: "BUS SCHEDULE", url: '#', icon: 'bus.png', click: function () { kiosk.loadButtons(settings.buttons.bus); } },
@@ -42,7 +42,11 @@ var settings = {
             { name: "1ST FLOOR", url: '#', icon: 'floor1.png', click: function () { kiosk.showImage('images/itc1.png'); } },
             { name: "2ND FLOOR", url: '#', icon: 'floor2.png', click: function () { kiosk.showImage('images/itc2.png'); } }
         ]
-    }
+    },
+    ads: [
+      { url: 'images/landscape.jpg', width: 1834, height: 679, start: '2014-10-11', end: '2014-10-13' }, /* bursaries ad */
+      { url: 'images/orientation2014sm.png', width: 1606, height: 975, end: '2014-09-06' } /* orientation schedule */
+    ]
 };
 
 var Button = new Class({
@@ -211,8 +215,104 @@ var Popup = new Class({
     }
 });
 
+var Ad = new Class({
+    Implements: Options,
+    options: {
+        imgUrl: null,
+        startDate: null,
+        endDate: null
+    },
+    initialize: function(options) {
+        this.setOptions(options);
+        this.image = Asset.image(this.options.imgUrl);
+    },
+    toElement: function() {
+      return this.image;
+    },
+    expired: function() {
+        var today = new Date();
+        return (this.options.startDate && (today < this.options.startDate)) || 
+               (this.options.endDate   && (today > this.options.endDate));
+    }
+});
+
+var AdRotater = new Class({
+    Implements: [Options,Events],
+    options: {
+        timeout: 6000 // 1 minute timeout on ads
+    },
+    ads: [],
+    initialize: function (options) {
+
+        this.setOptions(options);
+        this.ads = settings.ads.map(function(i) { 
+            return new Ad({
+              imgUrl: i.url,
+              startDate: Date.parse(i.start),
+              endDate: Date.parse(i.end)
+            }); 
+        });
+        this.current_ad = 0;
+
+        /* if the user touches the screen,
+           generate a click event */
+        this.element = new Element('div', {
+            events: {
+                click: function () {
+                  this.fireEvent('click');
+                }.bind(this)
+            }
+        });
+
+        this.show();
+    },
+    toElement: function() {
+      return this.element;
+    },
+    activeCount: function() {
+      var length = 0;
+      for( var i=0; i<this.ads.length; i++ ) {
+        if( !this.ads[i].expired() ) {
+          length += 1;
+        }
+      }
+      return length;
+    },
+    hide: function () {
+        $clear(this.timer);
+    },
+    show: function () {
+        this.resetTimer();
+        
+        this.element.empty();
+
+        /* show the next non-expired ad */
+        if( this.activeCount() > 0 ) {
+          var start_ad = this.current_ad;
+          do {
+            this.current_ad = (this.current_ad + 1) % settings.ads.length;
+          } while( this.ads[this.current_ad].expired() && (this.current_ad != this.start_ad) );
+
+          var img = this.ads[this.current_ad].image;
+
+          /* center the ad vertically */
+          var vpad = (Window.getHeight() - img.height - 165) / 2;
+          this.element.setStyle('padding', vpad + 'px 0');
+          
+          this.element.adopt(img);
+        }
+    },
+    resetTimer: function () {
+        $clear(this.timer);
+        this.timer = this.show.delay(this.options.timeout, this);
+    }
+});
+
 var Kiosk = new Class({
     initialize: function () {
+        this.ad = new AdRotater({
+          onClick: function() { this.loadButtons(settings.buttons.main); }.bind(this)
+        });
         this.showHome();
         this.current_page = 1;
     },
@@ -227,41 +327,25 @@ var Kiosk = new Class({
             this.createButton(buttons[i], 'buttons');
         }
 
-        // reset to home page
+        // reset to home page, if we aren't already there
         $clear(this.home_timer);
-        this.home_timer = this.showHome.delay(60000, this);
+        if( buttons != settings.buttons.main ) {
+            this.home_timer = this.showHome.delay(60000, this);
+        } else {
+            // show the ads after 60 secs if we are there
+            this.home_timer = this.showAds.delay(60000, this);
+        }
+    },
+    showAds: function() {
+        if( this.ad.activeCount() > 0 ) {
+            $('buttons').empty();
+
+            /* display the advertisements */
+            $(this.ad).inject('buttons');
+        }
     },
     showHome: function () {
         this.loadButtons(settings.buttons.main);
-
-        $('buttons').empty();
-        var div = new Element('div', {
-            styles: {
-                'z-index': 1002,
-								position: 'absolute',
-								width: Window.getWidth() - 50,
-								height: Window.getHeight() - 165
-            },
-            events: {
-                click: function () {
-									this.loadButtons(settings.buttons.main);
-                } .bind(this)
-            }
-        }).inject('buttons');
-/*
-        var swf = new Swiff('pdfs/agenda2.swf', {
-            width: '100%',
-            height: '100%',
-            params: {
-                wmode: 'transparent',
-                quality: 'high'
-            }
-        }).inject('buttons');
-*/
-        var img = Asset.image('images/orientation2014sm.png', {
-            width: '1606px',
-            height: '975px'
-        }).inject('buttons');
     },
     showCalendar: function () {
         this.popup = new Popup();
@@ -387,6 +471,8 @@ var Kiosk = new Class({
         });
     }
 });
+
+
 
 function updateFooter() {
     $('date').innerHTML = getDate();
