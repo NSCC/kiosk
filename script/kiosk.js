@@ -43,9 +43,9 @@ var settings = {
             { name: "2ND FLOOR", url: '#', icon: 'floor2.png', click: function () { kiosk.showImage('images/itc2.png'); } }
         ]
     },
-    ads: [
+    ads: [ /* max image: 1834x905 */
       { url: 'images/landscape.jpg', width: 1834, height: 679, start: '2014-10-11', end: '2014-10-14' }, /* bursaries ad */
-      { url: 'images/orientation2014sm.png', width: 1606, height: 975, end: '2014-09-06' } /* orientation schedule */
+      { url: 'images/adhdweek.png', width: 1600, height: 900, end: '2014-10-20' } /* adhd week */
     ]
 };
 
@@ -239,7 +239,7 @@ var Ad = new Class({
 var AdRotater = new Class({
     Implements: [Options,Events],
     options: {
-        timeout: 6000 // 1 minute timeout on ads
+        timeout: 60000 // 1 minute timeout on ads
     },
     ads: [],
     initialize: function (options) {
