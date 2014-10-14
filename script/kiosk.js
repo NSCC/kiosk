@@ -44,7 +44,7 @@ var settings = {
         ]
     },
     ads: [ /* max image: 1834x905 */
-      { url: 'images/landscape.jpg', width: 1834, height: 679, start: '2014-10-11', end: '2014-10-14' }, /* bursaries ad */
+      { url: 'images/landscape.jpg', width: 1834, height: 679, start: '2014-10-11', end: '2014-10-22' }, /* bursaries ad */
       { url: 'images/adhdweek.png', width: 1600, height: 900, end: '2014-10-20' } /* adhd week */
     ]
 };
